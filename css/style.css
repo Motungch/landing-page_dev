@@ -11,7 +11,7 @@
   --font-line-height-h4: 32px;
 
   --font-size-button-lg: 18px;
-  --font-weight-button-lg: 700;
+  --font-weight-button-lg: 600;
   --font-line-height-button-lg: 24px;
 
   --font-size-hero: 56px;
@@ -20,6 +20,7 @@
 
   --spacing-sm: 8px;
   --spacing-md: 12px;
+  --spacing-lg: 16px;
   --spacing-2xl: 24px;
   --spacing-3xl: 32px;
   --spacing-4xl: 40px;
@@ -40,8 +41,8 @@ body {
 .header {
   display: flex;
   height: 80px;
-  /* padding: 0 240px; */
-  justify-content: space-around;
+  padding: 0 40px;
+  justify-content: center;
   align-items: center;
   border-bottom: 1px solid var(--Ink-200);
   background: rgba(255, 255, 255, 0.8);
@@ -50,7 +51,7 @@ body {
 
 .logo-and-nav-and-btn {
   display: flex;
-  width: 1440px;
+  width: 100%;
   max-width: 1440px;
   justify-content: space-between;
   align-items: center;
@@ -100,7 +101,7 @@ ul.nav-links {
   font-family: var(--font-family-default, "Noto Sans TC");
   font-size: var(--font-size-button-lg, 18px);
   font-style: normal;
-  font-weight: var(--font-weight-button-lg, 700);
+  font-weight: var(--font-weight-button-lg, 600);
   line-height: var(--font-line-height-button-lg, 24px); /* 133.333% */
   text-decoration: none;
 }
@@ -127,14 +128,16 @@ button {
   line-height: var(--font-line-height-button-lg, 24px); /* 133.333% */
 }
 
-/* Hero Banner */
+/* Hero Banner —— 桌機 w1280 以上，對應 Figma w1440 / w1920 稿
+   三個斷點共用同一套結構：背景圖與 mockup 都是滿版疊圖，文字浮在上層，
+   斷點只改「容器高度、文字位置、字級」，不改 DOM 排列。 */
 #hero-banner {
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: center; /* 文字垂直置中 */
   overflow: hidden;
-  min-height: clamp(480px, 48vw, 750px);
-  padding: 80px clamp(24px, 6vw, 240px);
+  min-height: max(932px, 48.54vw); /* 932/1920，超過 1920 時等比長高 */
+  padding: 0 clamp(120px, 25vw - 240px, 240px); /* w1440→120、w1920→240 */
 }
 
 .hero-bg {
@@ -159,6 +162,7 @@ button {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center bottom;
 }
 
 .txt-and-btn {
@@ -166,8 +170,13 @@ button {
   flex-direction: column;
   align-items: flex-start;
   gap: var(--spacing-4xl);
-  max-width: 720px;
   z-index: 1;
+}
+
+.hero-copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3xl);
 }
 
 .txt-and-btn h1 {
@@ -175,6 +184,7 @@ button {
   font-size: var(--font-size-hero);
   font-weight: var(--font-weight-hero);
   line-height: var(--font-line-height-hero);
+  letter-spacing: 0.03em;
   color: var(--Ink-600);
 }
 
@@ -186,55 +196,52 @@ button {
   color: var(--Ink-600);
 }
 
+.txt-and-btn button {
+  padding: var(--spacing-lg) var(--spacing-3xl);
+}
+
 .btn-icon {
   width: 28px;
   height: 28px;
 }
 
-/* RWD-手機優先 Mobile max w768 */
-@media screen and (max-width: 768px) {
-  .header {
-    width: 100%;
-    padding: 0 40px;
-  }
-
+/* RWD-平板 w1024~1439：拉高到 1080px，文字改置頂，避開手機 mockup
+   （1440 以下標題右緣就會撞到 mockup 的手機，所以切換點設在 1440 而非 1280） */
+@media screen and (max-width: 1439px) {
   #hero-banner {
-    flex-direction: column;
-    align-items: stretch;
-    text-align: center;
-    min-height: auto;
-    padding: 40px 24px;
-    gap: var(--spacing-3xl);
+    align-items: flex-start;
+    min-height: 1080px;
+    padding: 160px 120px;
   }
 
-  .hero-bg {
-    display: none;
+  /* mockup 維持原始 932px 高並貼齊底部，上方多出來的空間露出背景圖 */
+  .hero-mockup {
+    top: auto;
+    height: 932px;
+  }
+}
+
+/* RWD-手機 w1023 以下 */
+@media screen and (max-width: 1023px) {
+  #hero-banner {
+    padding: 32px 20px;
   }
 
   .hero-mockup {
-    position: static;
-    order: 2;
-    inset: auto;
-    width: 100%;
-    aspect-ratio: 4 / 3;
+    height: 730px;
   }
+  /* 手機較窄，把裁切點往右移讓手機主體維持在畫面中間 */
   .hero-mockup img {
-    object-position: 68% 42%;
+    object-position: 70% bottom;
   }
 
-  .txt-and-btn {
-    order: 1;
-    align-items: center;
-    max-width: 100%;
-    gap: var(--spacing-2xl);
+  .txt-and-btn h1 {
+    font-size: 40px;
+    line-height: 48px;
   }
 
-  .txt-and-btn button {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .force-break {
-    display: none;
+  .txt-and-btn p {
+    font-size: 20px;
+    line-height: 28px;
   }
 }
