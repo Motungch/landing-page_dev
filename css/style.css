@@ -11,12 +11,19 @@
   --font-line-height-h4: 32px;
 
   --font-size-button-lg: 18px;
-  --font-weight-button-lg: 600;
+  --font-weight-button-lg: 700;
   --font-line-height-button-lg: 24px;
+
+  --font-size-hero: 56px;
+  --font-weight-hero: 700;
+  --font-line-height-hero: 60px;
 
   --spacing-sm: 8px;
   --spacing-md: 12px;
   --spacing-2xl: 24px;
+  --spacing-3xl: 32px;
+  --spacing-4xl: 40px;
+  --spacing-5xl: 48px;
 
   --radius-md: 12px;
 }
@@ -24,6 +31,10 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+body {
+  background-color: var(--White);
 }
 
 .header {
@@ -116,10 +127,114 @@ button {
   line-height: var(--font-line-height-button-lg, 24px); /* 133.333% */
 }
 
+/* Hero Banner */
+#hero-banner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  min-height: clamp(480px, 48vw, 750px);
+  padding: 80px clamp(24px, 6vw, 240px);
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+}
+
+/* hero-mockup.png 是已經包含手部/白色漸層的完稿合成圖，
+   跟 hero-bg 一樣是滿版鋪底，不是單獨的手機小圖示 */
+.hero-mockup {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.hero-mockup img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.txt-and-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-4xl);
+  max-width: 720px;
+  z-index: 1;
+}
+
+.txt-and-btn h1 {
+  font-family: var(--font-family-default);
+  font-size: var(--font-size-hero);
+  font-weight: var(--font-weight-hero);
+  line-height: var(--font-line-height-hero);
+  color: var(--Ink-600);
+}
+
+.txt-and-btn p {
+  font-family: var(--font-family-default);
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-h4);
+  line-height: var(--font-line-height-h4);
+  color: var(--Ink-600);
+}
+
+.btn-icon {
+  width: 28px;
+  height: 28px;
+}
+
 /* RWD-手機優先 Mobile max w768 */
 @media screen and (max-width: 768px) {
   .header {
     width: 100%;
     padding: 0 40px;
+  }
+
+  #hero-banner {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    min-height: auto;
+    padding: 40px 24px;
+    gap: var(--spacing-3xl);
+  }
+
+  .hero-bg {
+    display: none;
+  }
+
+  .hero-mockup {
+    position: static;
+    order: 2;
+    inset: auto;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+  }
+  .hero-mockup img {
+    object-position: 68% 42%;
+  }
+
+  .txt-and-btn {
+    order: 1;
+    align-items: center;
+    max-width: 100%;
+    gap: var(--spacing-2xl);
+  }
+
+  .txt-and-btn button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .force-break {
+    display: none;
   }
 }
