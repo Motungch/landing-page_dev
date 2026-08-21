@@ -1,0 +1,225 @@
+/* ============================================================
+   Section 4 — 使用流程（How App works）
+   對應 Figma w1920 稿：section padding 120/240、head → step row → 影片
+   三段各間隔 48。三張 step 卡 464 + gap 24（內容區恰好 1440），
+   影片框 1440x755、圓角 24。
+
+   排版策略：
+   1. 沿用前面區塊的「左右內距 + 內容 max-width 1440 置中」，
+      斷點也對齊既有的 1519 / 1199 / 1023 / 767 四道。
+   2. step row 用 grid：桌機三欄，w1023 以下直接收成單欄。
+      三個步驟是有順序的，中間停在兩欄會多出一張落單的卡片，所以不設兩欄。
+      收單欄後跟 section 3 一樣鎖 max-width 置中，否則卡片會被拉到整個視窗寬。
+   3. 三張卡改成等高（Figma 是各自 hug）。等高之後「行數差 = 空白差」，
+      所以 1519 / 1199 兩道斷點都在替文字欄爭取寬度：先縮卡片內距與序號，
+      再降標題字級，讓三張卡的行數盡量拉平。
+   4. 影片本身是 1280x720（16:9），跟 Figma 的框（1440x755）不一樣，
+      一律用 object-fit: cover 填滿框 —— 手機畫面固定在正中央，
+      裁掉的都是兩側／上下的空白背景，主體不會被切到。
+      框的比例桌機照 Figma、w1023 以下換成原生 16:9，再窄則由 min-height
+      接手撐高，避免螢幕一窄、中央的手機就縮到看不清楚。
+   5. 影片的播放時機（進入畫面才播、離開就暫停）在 js/main.js，
+      這裡只負責框與比例。
+   ============================================================ */
+
+#process {
+  /* 本區塊專用的區域變數，斷點只要改這幾個值，下面規則不用重寫 */
+  --pr-section-py: 120px;
+  --pr-section-px: 40px;
+  --pr-section-gap: var(--spacing-5xl); /* head / step row / 影片 三段的距離 */
+  --pr-stack-max: 640px; /* 收成單欄後的內容寬度上限 */
+  --pr-card-p: var(--spacing-3xl);
+  --pr-card-gap: var(--spacing-lg); /* 序號與文字的距離 */
+  --pr-no-size: 52px;
+  --pr-title-size: var(--font-size-h4);
+  --pr-title-lh: var(--font-line-height-h4);
+  --pr-video-ratio: 1440 / 755; /* Figma 影片框的比例 */
+  --pr-video-min-h: 360px; /* 框再窄也不低於這個高度，見 .pr-video */
+  --pr-video-radius: var(--radius-xl);
+  --pr-video-bg: #f2f2f2; /* 影片自己的底色（取自第一幀），poster 進來前先鋪上，避免閃白 */
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--pr-section-gap);
+  padding: var(--pr-section-py) var(--pr-section-px);
+  background: var(--White);
+}
+
+/* --- 標題區 ---
+   這一區 Figma 只有一行 h3，沒有 section 2 / 3 的副標 */
+.pr-head {
+  width: 100%;
+  max-width: 1440px;
+  text-align: center;
+}
+
+.pr-head h2 {
+  font-family: var(--font-family-default);
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-h3);
+  line-height: var(--font-line-height-h3);
+  color: var(--Ink-600);
+}
+
+/* --- 三個步驟 --- */
+.pr-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)); /* minmax(0,…) 讓長字串能正常收縮 */
+  /* Figma 是 align-items: start（卡片各自 hug 內容高度）。
+     1920 稿三張只差 24px 看不太出來，但視窗一窄，第 2 張的內文會多出好幾行，
+     有框線又有底色的卡片下緣參差會很明顯，所以這裡改成等高。
+     想完全照 Figma，把這行換成 align-items: start 即可。 */
+  align-items: stretch;
+  gap: var(--spacing-2xl);
+  width: 100%;
+  max-width: 1440px;
+  list-style: none;
+}
+
+.pr-step {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--pr-card-gap);
+  padding: var(--pr-card-p);
+  border: 1px solid var(--Ink-200);
+  border-radius: var(--radius-lg);
+  background: var(--Cream-100);
+}
+
+.pr-step-no {
+  flex-shrink: 0; /* 圓形序號不跟著文字被壓扁 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--pr-no-size);
+  height: var(--pr-no-size);
+  border-radius: var(--radius-full);
+  background: var(--Amber-500);
+  font-family: var(--font-family-default);
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-h4);
+  line-height: var(--font-line-height-h4);
+  color: var(--White);
+}
+
+.pr-step-text {
+  min-width: 0; /* 沒有這行，長網址之類的字串會把卡片撐破 */
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.pr-step-text h3 {
+  font-family: var(--font-family-default);
+  font-size: var(--pr-title-size);
+  font-weight: var(--font-weight-h4);
+  line-height: var(--pr-title-lh);
+  color: var(--Ink-600);
+}
+
+.pr-step-text p {
+  font-family: var(--font-family-default);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-body);
+  line-height: var(--font-line-height-body);
+  color: var(--Ink-500);
+}
+
+/* --- 影片 ---
+   框先用 aspect-ratio 把高度定下來，影片還沒載入版面也不會跳（避免 CLS）。 */
+.pr-video {
+  width: 100%;
+  max-width: 1440px;
+  aspect-ratio: var(--pr-video-ratio);
+  /* 手機寬度下 16:9 會扁到看不清畫面中央的手機（350px 寬只剩 197px 高）。
+     用 min-height 把框撐起來，比例會隨寬度連續變方，不必再切一個斷點；
+     多出來的高度由 object-fit: cover 補滿，裁掉的是左右兩側的空白背景。
+     框寬 640 時 16:9 已經有 360，所以這條在平板以上永遠不會生效。 */
+  min-height: var(--pr-video-min-h);
+  border-radius: var(--pr-video-radius);
+  overflow: hidden;
+  background: var(--pr-video-bg);
+}
+
+.pr-video video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* poster 也吃這個設定，載入前後的構圖一致 */
+  /* Safari 的影片是獨立合成層，只靠外層 overflow: hidden 有機會切不到圓角，
+     這裡再補一次 */
+  border-radius: inherit;
+}
+
+/* --- RWD w1519 以下：內容區已站不滿 1440，卡片開始被壓窄。
+       收掉外框左右內距，同時把卡片內距與序號縮一階 —— 這 24px 全部留給文字，
+       三張卡的行數才不會差太多（等高之後，行數差 = 空白差） --- */
+@media screen and (max-width: 1519px) {
+  #process {
+    --pr-section-px: var(--spacing-3xl);
+    --pr-card-p: var(--spacing-2xl);
+    --pr-card-gap: var(--spacing-md);
+    --pr-no-size: 44px;
+  }
+}
+
+/* --- RWD w1199 以下：與 header 收合漢堡選單同一個斷點。
+       每張卡剩不到 365px、文字欄只有 260px 出頭，
+       24px 的標題會固定折成兩行，降一階讓它有機會收回一行 --- */
+@media screen and (max-width: 1199px) {
+  #process {
+    --pr-section-py: 96px;
+    --pr-title-size: 20px;
+    --pr-title-lh: 28px;
+  }
+}
+
+/* --- RWD w1023 以下：三欄改單欄（與 section 3 收成手機排列同一個斷點）。
+       三欄在 1024 以下每張卡剩不到 310px，扣掉序號後文字只剩 190px 出頭，
+       第 2 張的內文會被擠成四五行。
+       單欄之後鎖 --pr-stack-max 置中，卡片與影片共用同一條左右邊界。
+       影片比例同時換成原生的 16:9 —— 這時候框變窄，用原生比例剛好不必裁切。 --- */
+@media screen and (max-width: 1023px) {
+  #process {
+    --pr-section-py: 80px;
+    --pr-section-px: 20px; /* 與 hero / section 2 / section 3 的手機內距一致 */
+    --pr-section-gap: var(--spacing-4xl);
+    --pr-title-size: var(--font-size-h4);
+    --pr-title-lh: var(--font-line-height-h4);
+    --pr-video-ratio: 16 / 9;
+  }
+
+  .pr-head h2 {
+    font-size: 28px;
+    line-height: 36px;
+  }
+
+  .pr-steps {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--spacing-md);
+  }
+
+  .pr-steps,
+  .pr-video {
+    max-width: var(--pr-stack-max);
+  }
+}
+
+/* --- RWD w767 以下：字級再降一階，貼齊 section 2 / 3 的手機字級。
+       影片比例不用在這裡處理，.pr-video 的 min-height 會接手 --- */
+@media screen and (max-width: 767px) {
+  #process {
+    --pr-section-py: 64px;
+    --pr-section-gap: var(--spacing-3xl);
+    --pr-no-size: 40px;
+    --pr-title-size: 20px;
+    --pr-title-lh: 28px;
+    --pr-video-radius: var(--radius-lg);
+  }
+
+  .pr-head h2 {
+    font-size: var(--font-size-h4);
+    line-height: var(--font-line-height-h4);
+  }
+}

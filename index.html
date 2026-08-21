@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="css/hero.css" />
     <link rel="stylesheet" href="css/why-use-app.css" />
     <link rel="stylesheet" href="css/highlights.css" />
+    <link rel="stylesheet" href="css/process.css" />
   </head>
   <body>
     <header class="header">
@@ -213,6 +214,58 @@
             </ul>
           </div>
         </article>
+      </div>
+    </section>
+
+    <!-- Section 4_使用流程 -->
+    <section id="process">
+      <div class="pr-head">
+        <h2>How App works?</h2>
+      </div>
+
+      <!-- 有先後順序的三個步驟，所以用 ol；序號是內容的一部分，直接寫在 DOM 裡 -->
+      <ol class="pr-steps">
+        <li class="pr-step">
+          <span class="pr-step-no">01</span>
+          <div class="pr-step-text">
+            <h3>拍下房間角落</h3>
+            <p>對著想調整的位置拍一張照片，App 辨識空間並算出可用尺寸。</p>
+          </div>
+        </li>
+        <li class="pr-step">
+          <span class="pr-step-no">02</span>
+          <div class="pr-step-text">
+            <h3>匯入商品連結進行比對</h3>
+            <p>
+              App 會自動分析連結中的軟裝商品尺寸規格，並同時與預計擺放的空間進行比對，若仍再考慮，也能先收藏。
+            </p>
+          </div>
+        </li>
+        <li class="pr-step">
+          <span class="pr-step-no">03</span>
+          <div class="pr-step-text">
+            <h3>綁定空間後，看到成果再下單</h3>
+            <p>生成擬真渲染預覽，確認放得下、也搭得起來，再回平台下單。</p>
+          </div>
+        </li>
+      </ol>
+
+      <!-- preload="none"：影片不參與首屏載入，等捲到這一區才開始抓
+           muted + playsinline + loop：行動裝置自動播放的必要條件，並且循環
+           poster：影片的第一幀，還沒播放前先撐住畫面
+           播放／暫停的時機在 js/main.js -->
+      <div class="pr-video">
+        <video
+          id="process-video"
+          src="videos/app-product-animation.mp4"
+          poster="imgs/section 4/video-poster.jpg"
+          muted
+          loop
+          playsinline
+          preload="none"
+          disablepictureinpicture
+          aria-label="App 操作流程動畫：拍照量測空間、匯入商品連結比對、生成擬真渲染預覽"
+        ></video>
       </div>
     </section>
 
