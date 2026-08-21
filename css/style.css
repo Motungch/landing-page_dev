@@ -186,6 +186,11 @@ button {
   align-items: flex-start;
   gap: var(--spacing-4xl);
   z-index: 1;
+  /* 與 header 同樣採「max-width 1440 置中」，1920 以上才不會愈拉愈寬時
+     文字往左偏、與 header 最左邊的 logo 對不齊 */
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
 }
 
 .hero-copy {
