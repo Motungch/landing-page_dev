@@ -18,7 +18,10 @@
       裁掉的都是兩側／上下的空白背景，主體不會被切到。
       框的比例桌機照 Figma、w1023 以下換成原生 16:9，再窄則由 min-height
       接手撐高，避免螢幕一窄、中央的手機就縮到看不清楚。
-   5. 影片的播放時機（進入畫面才播、離開就暫停）在 js/main.js，
+   5. 影片左下角有燒死的浮水印，用一個同底色的遮色塊蓋掉。遮色塊必須跟著
+      「影片的渲染框」而不是「外框」走，所以中間多包一層 .pr-video-inner，
+      用 container query 單位把 cover 的幾何算出來（見該處註解）。
+   6. 影片的播放時機（進入畫面才播、離開就暫停）在 js/main.js，
       這裡只負責框與比例。
    ============================================================ */
 
@@ -33,6 +36,7 @@
   --pr-no-size: 52px;
   --pr-title-size: var(--font-size-h4);
   --pr-title-lh: var(--font-line-height-h4);
+  --pr-video-max: 1440px; /* 影片框寬度上限（step row 仍是 1440） */
   --pr-video-ratio: 1440 / 755; /* Figma 影片框的比例 */
   --pr-video-min-h: 360px; /* 框再窄也不低於這個高度，見 .pr-video */
   --pr-video-radius: var(--radius-xl);
@@ -129,8 +133,9 @@
 /* --- 影片 ---
    框先用 aspect-ratio 把高度定下來，影片還沒載入版面也不會跳（避免 CLS）。 */
 .pr-video {
+  position: relative;
   width: 100%;
-  max-width: 1440px;
+  max-width: var(--pr-video-max);
   aspect-ratio: var(--pr-video-ratio);
   /* 手機寬度下 16:9 會扁到看不清畫面中央的手機（350px 寬只剩 197px 高）。
      用 min-height 把框撐起來，比例會隨寬度連續變方，不必再切一個斷點；
@@ -140,16 +145,58 @@
   border-radius: var(--pr-video-radius);
   overflow: hidden;
   background: var(--pr-video-bg);
+  /* 讓 .pr-video-inner 可以用 cqw / cqh 換算 cover 之後的尺寸。
+     用 size 而不是 inline-size —— 需要 cqh，而且這個框的高度本來就由
+     aspect-ratio / min-height 決定，不看內容，加 size containment 沒有副作用 */
+  container-type: size;
+}
+
+/* 影片經 object-fit: cover 之後的「實際渲染框」。
+   外框比例（1440/755、16/9、或被 min-height 撐方）跟影片的 16:9 不一樣，
+   cover 會把影片放大到蓋滿外框再置中裁切 —— 這一層就是把那個放大後的框
+   實際做出來：兩軸各取需要放大較多的那一邊，正是 cover 的定義。
+   有了它，裡面的遮色塊才能用百分比直接對齊影片自己的座標系，
+   不必管外框現在是什麼比例。 */
+.pr-video-inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: max(100cqw, 100cqh * 1280 / 720);
+  height: max(100cqh, 100cqw * 720 / 1280);
 }
 
 .pr-video video {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover; /* poster 也吃這個設定，載入前後的構圖一致 */
-  /* Safari 的影片是獨立合成層，只靠外層 overflow: hidden 有機會切不到圓角，
-     這裡再補一次 */
-  border-radius: inherit;
+  object-fit: cover; /* 這一層已經是 16:9，poster（1440x755）靠它補齊 */
+}
+
+/* 遮掉影片左下角燒死的 ULTRAMOCK.IO 浮水印。
+   浮水印在 1280x720 原始畫面的 x 16~281、y 671~703（t=0 與中段兩幀都量過，
+   位置固定不動），四周是乾淨的 #f2f2f2 底色。
+   這裡貼齊 .pr-video-inner 的左下角、尺寸用百分比 ——
+   x 0~24%（307px，右邊留 26px 餘裕）、y 91%~100%（65px，上面留 16px 餘裕），
+   所以不論視窗多寬、外框被裁成什麼比例，遮色塊都跟著影片等比縮放。
+   顏色共用 --pr-video-bg，萬一底色有出入只要改那一個變數。 */
+.pr-video-mask {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 24%;
+  height: 9%;
+  background: var(--pr-video-bg);
+  pointer-events: none;
+}
+
+/* --- RWD w1500 以下：影片框收到 1000。
+       比例與 min-height 不變，等於整個框連同裡面的遮色塊一起等比縮小。
+       （這道跟下面的 1519 只差 19px，要少一道斷點的話可以合併進去） --- */
+@media screen and (max-width: 1500px) {
+  #process {
+    --pr-video-max: 1000px;
+  }
 }
 
 /* --- RWD w1519 以下：內容區已站不滿 1440，卡片開始被壓窄。
@@ -187,6 +234,7 @@
     --pr-section-gap: var(--spacing-4xl);
     --pr-title-size: var(--font-size-h4);
     --pr-title-lh: var(--font-line-height-h4);
+    --pr-video-max: var(--pr-stack-max);
     --pr-video-ratio: 16 / 9;
   }
 
@@ -200,8 +248,7 @@
     gap: var(--spacing-md);
   }
 
-  .pr-steps,
-  .pr-video {
+  .pr-steps {
     max-width: var(--pr-stack-max);
   }
 }

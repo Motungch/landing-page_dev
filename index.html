@@ -255,17 +255,23 @@
            poster：影片的第一幀，還沒播放前先撐住畫面
            播放／暫停的時機在 js/main.js -->
       <div class="pr-video">
-        <video
-          id="process-video"
-          src="videos/app-product-animation.mp4"
-          poster="imgs/section 4/video-poster.jpg"
-          muted
-          loop
-          playsinline
-          preload="none"
-          disablepictureinpicture
-          aria-label="App 操作流程動畫：拍照量測空間、匯入商品連結比對、生成擬真渲染預覽"
-        ></video>
+        <!-- .pr-video-inner 的尺寸＝影片被 object-fit: cover 放大後的實際渲染框，
+             遮色塊掛在它裡面，才能用百分比對齊影片自己的座標（見 process.css） -->
+        <div class="pr-video-inner">
+          <video
+            id="process-video"
+            src="videos/app-product-animation.mp4"
+            poster="imgs/section 4/video-poster.jpg"
+            muted
+            loop
+            playsinline
+            preload="none"
+            disablepictureinpicture
+            aria-label="App 操作流程動畫：拍照量測空間、匯入商品連結比對、生成擬真渲染預覽"
+          ></video>
+          <!-- 蓋掉影片左下角燒死的 ULTRAMOCK.IO 浮水印 -->
+          <span class="pr-video-mask" aria-hidden="true"></span>
+        </div>
       </div>
     </section>
 
