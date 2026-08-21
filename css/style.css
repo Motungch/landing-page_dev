@@ -1,4 +1,26 @@
-*{
+:root{
+  --Amber-500: #ff8524;
+  --Ink-200: #d6d6d4;
+  --Ink-500: #5a5a58;
+  --Ink-600: #2b2a28;
+  --White: #fff;
+
+  --font-family-default: "Noto Sans TC";
+  --font-size-h4: 24px;
+  --font-weight-h4: 500;
+  --font-line-height-h4: 32px;
+
+  --font-size-button-lg: 18px;
+  --font-weight-button-lg: 600;
+  --font-line-height-button-lg: 24px;
+
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-2xl: 24px;
+
+  --radius-md: 12px;
+}
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -7,10 +29,10 @@
 .header {
   display: flex;
   height: 80px;
-  padding: 0 240px;
-  justify-content: space-between;
+  /* padding: 0 240px; */
+  justify-content: space-around;
   align-items: center;
-  border-bottom: 1px solid var(--Ink-200, #d6d6d4);
+  border-bottom: 1px solid var(--Ink-200);
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(10px);
 }
@@ -92,4 +114,12 @@ button {
   font-style: normal;
   font-weight: var(--font-weight-button-lg, 700);
   line-height: var(--font-line-height-button-lg, 24px); /* 133.333% */
+}
+
+/* RWD-手機優先 Mobile max w768 */
+@media screen and (max-width: 768px) {
+  .header {
+    width: 100%;
+    padding: 0 40px;
+  }
 }
