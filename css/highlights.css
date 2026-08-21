@@ -11,6 +11,10 @@
    2. 兩欄都用 flex:1 1 0（Figma 第 2、3 組的文字欄是 hug 寬度，
       這裡統一成等寬 632，視覺幾乎一致但少一套規則要維護）。
    3. 字級 / 內距 / icon 全部走區塊內的區域變數，斷點只改變數值。
+   4. mockup 分成兩層：底下是 .hl-glow（純 CSS 的模糊圓形，對應 Figma 的
+      Ellipse），上面是不含 Ellipse 的 mockup 圖。.hl-mockup 定義 Figma 的
+      640x720 框，兩層都以它為基準定位、都可以往外溢出，中間沒有任何一層
+      裁切，所以漸層不會被切斷。
    ============================================================ */
 
 #highlights {
@@ -34,6 +38,10 @@
      1920 時左右自然留 240 */
   padding: var(--hl-section-py) var(--hl-section-px);
   background: var(--Cream-100);
+  /* 漸層要能往外溢出，所以中間各層都不裁切；只有在這一層擋掉橫向溢位，
+     否則窄螢幕會多出整頁的水平捲軸。clip 不會像 hidden 一樣建立捲動容器，
+     也不會連帶把垂直方向變成 auto */
+  overflow-x: clip;
 }
 
 /* --- 標題區 --- */
@@ -86,23 +94,100 @@
   flex-direction: row-reverse;
 }
 
+/* 這個框＝Figma 的 Section 3 / Mockup Image（640x720），
+   手機 mockup 就是靠它定位，圖片本身比它大一圈 */
 .hl-mockup {
-  flex: 1 1 0;
-  min-width: 0; /* 讓圖能跟著欄寬縮小，不會把兩欄撐爆 */
-  max-width: 640px; /* Figma 的 Mockup Image 框寬 */
+  position: relative;
+  /* 寬度不跟著文字欄浮動：固定佔一半、上限 640（Figma 的框寬），
+     三組才會一樣大。剩下的空間讓 hug 的文字欄與 row 的留白去分配 */
+  flex: 0 0 auto;
+  width: min(640px, 50%);
+  aspect-ratio: 640 / 720; /* 尺寸先定下來，圖還沒載完版面也不會跳（避免 CLS） */
+  /* 讓 .hl-glow 的 blur 可以用 cqw 換算成框寬的比例。
+     inline-size 不含 paint containment，所以不會裁掉溢出的漸層 */
+  container-type: inline-size;
 }
 
-/* 三張 mockup 都是從 Figma 的 640x720 框裁出來的同解析度圖（1280x1440 @2x），
-   先鎖住比例，圖還沒載完版面就不會跳動（避免 CLS） */
+/* 三張圖的左上角都對齊框的左上角（實測位移為 0），差別只在卡片陰影往右下
+   多出來的部分，所以只需要一個寬度比例：--hl-img-w = 圖寬 / 框寬。
+   多出來的部分直接溢出，不裁切。 */
 .hl-mockup img {
-  display: block;
-  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--hl-img-w, 100%);
   height: auto;
-  aspect-ratio: 640 / 720;
+  max-width: none;
+  pointer-events: none; /* 溢出的透明區不要擋到旁邊文字的滑鼠事件 */
 }
 
+.hl-row:nth-of-type(2) {
+  --hl-img-w: 114.6875%; /* 734 / 640 */
+}
+
+.hl-row:nth-of-type(3) {
+  --hl-img-w: 110%; /* 704 / 640 */
+}
+
+/* --- 漸層圓形（Figma 的 Ellipse）---
+   Figma 輸出的 SVG 就只是「一個 #FF8524 的圓 + 高斯模糊」，
+   所以不需要圖檔，用 CSS 畫即可。SVG 的 feGaussianBlur stdDeviation
+   與 CSS blur() 的參數定義相同，數值可以直接搬過來。
+   位置 / 尺寸用 % 換算成框的比例；模糊半徑不吃 %，改用 cqw
+   （1cqw = 框寬的 1%），縮放時模糊才會跟著等比縮。 */
+.hl-glow {
+  position: absolute;
+  border-radius: 50%;
+  background: rgb(255 133 36 / 0.4);
+  pointer-events: none;
+}
+
+/* 1. Ellipse 16：圓心 (316.5, 356.5) r133.5、blur 200，基準框 632x711 */
+.hl-row:nth-of-type(1) .hl-glow {
+  left: 28.9557%;
+  top: 31.3643%;
+  width: 42.2468%;
+  height: 37.5528%;
+  filter: blur(31.6456cqw);
+}
+
+/* 2-1. Ellipse 17：圓心 (216.5, 260.5) r171.5、blur 200，基準框 640x720 */
+.hl-row:nth-of-type(2) .hl-glow:nth-of-type(1) {
+  left: 7.0313%;
+  top: 12.3611%;
+  width: 53.5938%;
+  height: 47.6389%;
+  filter: blur(31.25cqw);
+}
+
+/* 2-2. Ellipse 18：圓心 (433, 537) r138、blur 100、opacity 0.25 */
+.hl-row:nth-of-type(2) .hl-glow:nth-of-type(2) {
+  left: 46.0938%;
+  top: 55.4167%;
+  width: 43.125%;
+  height: 38.3333%;
+  background: rgb(255 133 36 / 0.25);
+  filter: blur(15.625cqw);
+}
+
+/* 3. Ellipse 16：圓心 (540.5, 353.5) r95.5、blur 200、opacity 0.6 */
+.hl-row:nth-of-type(3) .hl-glow {
+  left: 69.5313%;
+  top: 35.8333%;
+  width: 29.8438%;
+  height: 26.5278%;
+  background: rgb(255 133 36 / 0.6);
+  filter: blur(31.25cqw);
+}
+
+/* 跟 Figma 一樣是 hug content：寬度由標題／條列的最長一行決定，不平均分欄。
+   多出來的空間會落在「離圖比較遠」的那一側 —— 第 1、3 組圖在左，文字靠左邊
+   貼著圖、右側留白；第 2 組是 row-reverse，方向自動相反，文字右側貼著圖。
+   z-index 讓文字疊在 mockup 溢出的漸層之上。 */
 .hl-feature {
-  flex: 1 1 0;
+  position: relative;
+  z-index: 1;
+  flex: 0 1 auto;
   min-width: 0;
   display: flex;
   flex-direction: column;
@@ -216,12 +301,23 @@
     flex-direction: column;
     align-items: stretch;
     /* 平板寬度下 mockup 若拉滿會過大，整組收在 560 置中，
-       圖與文字共用同一條左邊界 */
+       圖與文字共用同一條左邊界。
+       width: 100% 不能省 —— margin: 0 auto 會讓 flex item 不再 stretch，
+       而 .hl-mockup 的圖是 absolute、撐不出寬度，整列會縮成文字的寬度 */
+    width: 100%;
     max-width: 560px;
     margin: 0 auto;
   }
 
+  /* column 之後 flex 的主軸是高度，flex-basis: 0 會把框壓扁，改回 auto，
+     高度交給 aspect-ratio 算 */
+  .hl-mockup,
+  .hl-feature {
+    flex: 0 0 auto;
+  }
+
   .hl-mockup {
+    width: 100%;
     max-width: 100%;
   }
 }
@@ -231,6 +327,7 @@
   #highlights {
     --hl-section-py: 64px;
     --hl-row-gap: var(--spacing-5xl);
+    --hl-col-gap: var(--spacing-lg); /* 手機版圖與文字拉近：32 -> 16 */
     --hl-icon-size: 72px;
     --hl-title-size: 28px;
     --hl-title-lh: 36px;
