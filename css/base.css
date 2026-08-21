@@ -30,6 +30,10 @@
   --font-weight-h3: 700;
   --font-line-height-h3: 40px;
 
+  --font-size-h2: 52px;
+  --font-weight-h2: 700;
+  --font-line-height-h2: 56px;
+
   --font-size-body-lg: 20px;
   --font-weight-body-lg: 500;
   --font-line-height-body-lg: 28px;
@@ -38,6 +42,7 @@
   --font-weight-body: 400;
   --font-line-height-body: 24px;
 
+  --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 12px;
   --spacing-lg: 16px;
@@ -45,7 +50,7 @@
   --spacing-3xl: 32px;
   --spacing-4xl: 40px;
   --spacing-5xl: 48px;
-
+  --spacing-6xl: 64px;
   --spacing-7xl: 80px;
 
   --radius-md: 12px;

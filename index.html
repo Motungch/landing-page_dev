@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="css/header.css" />
     <link rel="stylesheet" href="css/hero.css" />
     <link rel="stylesheet" href="css/why-use-app.css" />
+    <link rel="stylesheet" href="css/highlights.css" />
   </head>
   <body>
     <header class="header">
@@ -34,7 +35,7 @@
         </div>
         <nav class="nav-and-button">
           <ul class="nav-links" id="nav-links">
-            <li><a href="#why-use-app">為什麼使用這個 App</a></li>
+            <li><a href="#why-use-app">為什麼值得用這個 App</a></li>
             <li><a href="#highlights">功能亮點</a></li>
             <li><a href="#process">使用流程</a></li>
             <li><a href="#download">立即下載</a></li>
@@ -86,7 +87,7 @@
     <!-- Section 2_為什麼使用這個 App -->
     <section id="why-use-app">
       <div class="why-head">
-        <h2>為什麼使用這個 App？</h2>
+        <h2>為什麼值得用這個 App？</h2>
         <p>在規劃自己的居家空間時，可以直觀呈現擺放商品在空間的實際樣貌。</p>
       </div>
 
@@ -112,6 +113,103 @@
           <p>把商品收藏至 App，它會自動比對商品尺寸，並主動通知哪些商品擺得下。</p>
         </li>
       </ul>
+    </section>
+
+    <!-- Section 3_App 的功能亮點 -->
+    <section id="highlights">
+      <div class="hl-head">
+        <h2>App 的功能亮點</h2>
+        <p>三個主打功能：空間直接量、空間與商品直接比對、主動通知。</p>
+      </div>
+
+      <!-- 三組都照「mockup → 文字」的順序寫，桌機第 2 組靠 CSS row-reverse 左右對調 -->
+      <div class="hl-rows">
+        <!-- 1. 用相機測量空間 -->
+        <article class="hl-row">
+          <div class="hl-mockup">
+            <img
+              src="imgs/section 3/Mockup Image-1.png"
+              alt="App 用相機對著房間角落，畫面上直接標出量到的尺寸"
+            />
+          </div>
+          <div class="hl-feature">
+            <div class="hl-feature-head">
+              <img src="imgs/section 3/Icon/Icon-1.png" alt="" class="hl-icon" />
+              <h3>用相機測量空間</h3>
+            </div>
+            <ul class="hl-bullets">
+              <li>
+                <img src="imgs/icons/check.svg" alt="" class="hl-check" />
+                <p>拍下房間角落，直接測出可用尺寸</p>
+              </li>
+              <li>
+                <img src="imgs/icons/check.svg" alt="" class="hl-check" />
+                <p>支援手動輸入尺寸</p>
+              </li>
+              <li>
+                <img src="imgs/icons/check.svg" alt="" class="hl-check" />
+                <p>量過一次就記憶成一筆空間資料，讓你不用重覆測量</p>
+              </li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- 2. 匯入商品連結並自動與空間比對（桌機：文字在左、圖在右） -->
+        <article class="hl-row">
+          <div class="hl-mockup">
+            <img
+              src="imgs/section 3/Mockup Image-2.png"
+              alt="App 匯入商品連結後，自動帶出尺寸並與空間比對"
+            />
+          </div>
+          <div class="hl-feature">
+            <div class="hl-feature-head">
+              <img src="imgs/section 3/Icon/Icon-2.png" alt="" class="hl-icon" />
+              <h3>匯入商品連結<br />並自動與空間比對</h3>
+            </div>
+            <ul class="hl-bullets">
+              <li>
+                <img src="imgs/icons/check.svg" alt="" class="hl-check" />
+                <p>貼上商品連結，自動帶出長寬高</p>
+              </li>
+              <li>
+                <img src="imgs/icons/check.svg" alt="" class="hl-check" />
+                <p>與指定空間即時對照放不放得下</p>
+              </li>
+              <li>
+                <img src="imgs/icons/check.svg" alt="" class="hl-check" />
+                <p>一併檢查與既有家具的相容性</p>
+              </li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- 3. 存進收藏清單與主動通知 -->
+        <article class="hl-row">
+          <div class="hl-mockup">
+            <img
+              src="imgs/section 3/Mockup Image-3.png"
+              alt="App 主動推播通知，告知收藏清單中哪些商品現在放得下"
+            />
+          </div>
+          <div class="hl-feature">
+            <div class="hl-feature-head">
+              <img src="imgs/section 3/Icon/Icon-3.png" alt="" class="hl-icon" />
+              <h3>存進收藏清單與主動通知</h3>
+            </div>
+            <ul class="hl-bullets">
+              <li>
+                <img src="imgs/icons/check.svg" alt="" class="hl-check" />
+                <p>看到心動的商品，可先存進收藏清單觀望</p>
+              </li>
+              <li>
+                <img src="imgs/icons/check.svg" alt="" class="hl-check" />
+                <p>空間條件一改變，便會主動通知你哪些商品放得下</p>
+              </li>
+            </ul>
+          </div>
+        </article>
+      </div>
     </section>
 
     <script src="js/main.js" defer></script>
