@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>居家軟裝App —— 即時呈現空間改造的擺設圖像</title>
+    <title>居家軟裝App —— 即時呈現空間改造的擺設預覽</title>
     <link
       rel="icon"
       type="image/x-icon"
@@ -29,13 +29,22 @@
           <p>居家軟裝 App</p>
         </div>
         <nav class="nav-and-button">
-          <ul class="nav-links">
+          <ul class="nav-links" id="nav-links">
             <li><a href="#why-use-app">為什麼使用這個 App</a></li>
             <li><a href="#highlights">功能亮點</a></li>
             <li><a href="#process">使用流程</a></li>
             <li><a href="#download">立即下載</a></li>
           </ul>
-          <button>搶先預約 App 下載名額</button>
+          <button class="header-cta">搶先預約 App 下載名額</button>
+          <button
+            class="nav-toggle"
+            type="button"
+            aria-label="開啟選單"
+            aria-expanded="false"
+            aria-controls="nav-links"
+          >
+            <img src="imgs/icons/menu.svg" alt="" />
+          </button>
         </nav>
       </div>
     </header>
@@ -56,16 +65,22 @@
       </div>
       <div class="txt-and-btn">
         <div class="hero-copy">
-          <h1>拍張照片，就能看見居家<br />改造後的擺放預覽</h1>
+          <h1>
+            拍張照片，就能<br class="hero-br-sm" />看見居家<br
+              class="hero-br"
+            />改造<br class="hero-br-sm" />後的擺放預覽
+          </h1>
           <p>
             一款結合 AI 圖像渲染、<br />空間感知計算功能的居家軟裝 App
           </p>
         </div>
         <button>
-          查看改造範例
+          查看空間改造範例
           <img src="imgs/icons/arrow-right.svg" alt="" class="btn-icon" />
         </button>
       </div>
     </section>
+
+    <script src="js/main.js" defer></script>
   </body>
 </html>
