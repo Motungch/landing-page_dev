@@ -1,0 +1,171 @@
+/* ============================================================
+   header.css —— 全站 Header（Logo / 導覽列 / CTA / 漢堡選單）
+   依賴 base.css 的 token，載入順序需在 base.css 之後。
+   ============================================================ */
+
+.header {
+  position: relative; /* 漢堡選單面板的定位基準 */
+  z-index: 10; /* 蓋在 Hero Banner 上方 */
+  display: flex;
+  height: 80px;
+  padding: 0 40px;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid var(--Ink-200);
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+}
+
+.logo-and-nav-and-btn {
+  display: flex;
+  width: 100%;
+  max-width: 1440px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-logo {
+  width: 56px;
+  height: 56px;
+}
+
+.logo-and-text {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-and-text p {
+  color: var(--Ink-600, #2b2a28);
+  /* Landing/h4 */
+  font-family: var(--font-family-default, "Noto Sans TC");
+  font-size: var(--font-size-h4, 24px);
+  font-style: normal;
+  font-weight: var(--font-weight-h4, 500);
+  line-height: var(--font-line-height-h4, 32px); /* 133.333% */
+}
+
+.nav-and-button {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+ul.nav-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-links a {
+  color: var(--Ink-600, #2b2a28);
+  /* Landing/h5 */
+  color: var(--Ink-500, #5a5a58);
+  /* Landing/button-lg */
+  font-family: var(--font-family-default, "Noto Sans TC");
+  font-size: var(--font-size-button-lg, 18px);
+  font-style: normal;
+  font-weight: var(--font-weight-button-lg, 600);
+  line-height: var(--font-line-height-button-lg, 24px); /* 133.333% */
+  text-decoration: none;
+}
+
+.nav-links a:hover {
+  color: var(--Amber-500, #ff8524);
+  transition: all 0.3s ease-in-out;
+}
+
+/* 漢堡選單按鈕：桌機隱藏，w1199 以下才出現 */
+.nav-toggle {
+  display: none;
+  padding: var(--spacing-sm);
+  background: transparent;
+  cursor: pointer;
+}
+
+.nav-toggle img {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+
+/* RWD-Header w1199 以下：導覽連結收進漢堡選單
+   （導覽列展開時最少需要 1046px，1200 以下就會擠在一起） */
+@media screen and (max-width: 1199px) {
+  .nav-toggle {
+    display: flex;
+  }
+
+  /* 用 ul.nav-links 才蓋得過上面 ul.nav-links{padding:0} 的權重 */
+  ul.nav-links {
+    display: none;
+    position: absolute;
+    top: 100%; /* 貼在 header 下緣 */
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: var(--spacing-sm) 40px var(--spacing-lg);
+    background: var(--White);
+    border-bottom: 1px solid var(--Ink-200);
+  }
+
+  ul.nav-links.is-open {
+    display: flex;
+  }
+
+  .nav-links a {
+    display: block;
+    padding: var(--spacing-md) 0;
+  }
+}
+
+/* RWD-Header w640 以下：縮小 logo 與按鈕，讓三個元素塞得下 */
+@media screen and (max-width: 640px) {
+  .header {
+    padding: 0 16px;
+  }
+
+  .header-logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .logo-and-text {
+    gap: var(--spacing-sm);
+  }
+
+  .logo-and-text p {
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  .nav-and-button {
+    gap: var(--spacing-md);
+  }
+
+  .header-cta {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  ul.nav-links {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+/* RWD-Header w429 以下：空間不足以同時放文字商標與完整按鈕，只留 Logo 圖示 */
+@media screen and (max-width: 429px) {
+  .logo-and-text p {
+    display: none;
+  }
+}
