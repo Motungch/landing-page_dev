@@ -1,0 +1,184 @@
+/* ============================================================
+   Section 2 — 為什麼使用這個 App
+   對應 Figma w1920 稿：section padding 120/240、head 與 card row 間距 80、
+   卡片 4 欄 342px + gap 24（內容區恰好 1440）。
+   全域 token（:root / * / body）統一放在 style.css，這裡只寫本區塊的樣式。
+   ============================================================ */
+
+#why-use-app {
+  /* 本區塊專用的區域變數，斷點只要改這幾個值，下面規則不用重寫 */
+  --why-section-py: 120px;
+  --why-section-gap: var(--spacing-7xl); /* head 與卡片列的距離 */
+  --why-card-py-top: var(--spacing-3xl);
+  --why-card-py-bottom: var(--spacing-5xl);
+  --why-card-px: var(--spacing-3xl);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--why-section-gap);
+  /* 與 header / hero 相同的「左右 40 內距 + 內容 max-width 1440 置中」策略，
+     1920 時左右自然留 240，超過 1920 也不會跟 header logo 對不齊 */
+  padding: var(--why-section-py) 40px;
+  background: var(--White);
+}
+
+/* --- 標題區 --- */
+.why-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-lg);
+  width: 100%;
+  max-width: 1440px;
+  text-align: center;
+}
+
+.why-head h2 {
+  font-family: var(--font-family-default);
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-h3);
+  line-height: var(--font-line-height-h3);
+  color: var(--Ink-600);
+}
+
+.why-head p {
+  font-family: var(--font-family-default);
+  font-size: var(--font-size-body-lg);
+  font-weight: var(--font-weight-body-lg);
+  line-height: var(--font-line-height-body-lg);
+  color: var(--Cream-700);
+  text-wrap: balance; /* 窄螢幕自動平衡斷行，避免最後一行只剩兩三個字 */
+}
+
+/* --- 卡片列 --- */
+/* 用 grid 而不是 flex：四張卡等寬、等高，換行時各列自動對齊，
+   而且欄數只要改 grid-template-columns 一行就好 */
+.why-card-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)); /* minmax(0,…) 讓長字串能正常收縮 */
+  gap: var(--spacing-2xl);
+  width: 100%;
+  max-width: 1440px;
+  list-style: none;
+}
+
+.why-card {
+  position: relative; /* 數字底圖的定位基準 */
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding: var(--why-card-py-top) var(--why-card-px) var(--why-card-py-bottom);
+  border-radius: var(--radius-lg);
+  overflow: clip; /* 對應 Figma 的 clip content，數字不會溢出卡片 */
+}
+
+/* 01–04 數字是裝飾性底圖，貼齊卡片左上角、壓在標題下方 */
+.why-card-num {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 95px;
+  height: auto;
+  pointer-events: none;
+}
+
+/* 文字要浮在數字上層：兩者都是 positioned，DOM 在後者勝出 */
+.why-card h3,
+.why-card p {
+  position: relative;
+  font-family: var(--font-family-default);
+}
+
+.why-card h3 {
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-h4);
+  line-height: var(--font-line-height-h4);
+  color: var(--Ink-600);
+}
+
+.why-card p {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-body);
+  line-height: var(--font-line-height-body);
+  color: var(--Ink-500);
+}
+
+/* --- RWD w1519 以下：內容區已站不滿 1440，縮小外框與卡片內距，
+       讓四欄的可用文字寬度維持 Figma 的 278px（標題才不會被擠成兩行） --- */
+@media screen and (max-width: 1519px) {
+  #why-use-app {
+    --why-card-px: var(--spacing-2xl);
+    --why-card-py-bottom: var(--spacing-4xl);
+
+    padding-left: var(--spacing-3xl);
+    padding-right: var(--spacing-3xl);
+  }
+}
+
+/* --- RWD w1199 以下：四欄改兩欄（與 header 收合漢堡選單同一個斷點）
+       四欄在 1200 以下每張卡不到 270px，標題會被擠成三行 --- */
+@media screen and (max-width: 1199px) {
+  #why-use-app {
+    --why-section-py: 96px;
+    --why-section-gap: 64px;
+  }
+
+  .why-card-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* --- RWD w1023 以下：改用與 hero 相同的 20px 左右內距，字級降一階 --- */
+@media screen and (max-width: 1023px) {
+  #why-use-app {
+    --why-section-py: 80px;
+    --why-section-gap: 48px;
+
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .why-head h2 {
+    font-size: 28px;
+    line-height: 36px;
+  }
+
+  .why-head p {
+    font-size: 18px;
+    line-height: 26px;
+  }
+}
+
+/* --- RWD w767 以下：兩欄的每張卡已不足 340px，改單欄堆疊 --- */
+@media screen and (max-width: 767px) {
+  #why-use-app {
+    --why-section-py: 64px;
+    --why-section-gap: 40px;
+    --why-card-py-bottom: var(--spacing-3xl);
+  }
+
+  .why-card-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--spacing-sm);
+  }
+
+  .why-head h2 {
+    font-size: var(--font-size-h4);
+    line-height: var(--font-line-height-h4);
+  }
+
+  .why-head p {
+    font-size: var(--font-size-body);
+    line-height: var(--font-line-height-body);
+  }
+
+  .why-card h3 {
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  .why-card-num {
+    width: 80px;
+  }
+}
