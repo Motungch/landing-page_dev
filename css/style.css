@@ -1,0 +1,95 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.header {
+  display: flex;
+  height: 80px;
+  padding: 0 240px;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--Ink-200, #d6d6d4);
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+}
+
+.logo-and-nav-and-btn {
+  display: flex;
+  width: 1440px;
+  max-width: 1440px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-logo {
+  width: 56px;
+  height: 56px;
+}
+
+.logo-and-text {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.logo-and-text p {
+  color: var(--Ink-600, #2b2a28);
+  /* Landing/h4 */
+  font-family: var(--font-family-default, "Noto Sans TC");
+  font-size: var(--font-size-h4, 24px);
+  font-style: normal;
+  font-weight: var(--font-weight-h4, 500);
+  line-height: var(--font-line-height-h4, 32px); /* 133.333% */
+}
+
+.nav-and-button {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+ul.nav-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.nav-links a {
+  color: var(--Ink-600, #2b2a28);
+  /* Landing/h5 */
+  color: var(--Ink-500, #5a5a58);
+  /* Landing/button-lg */
+  font-family: var(--font-family-default, "Noto Sans TC");
+  font-size: var(--font-size-button-lg, 18px);
+  font-style: normal;
+  font-weight: var(--font-weight-button-lg, 700);
+  line-height: var(--font-line-height-button-lg, 24px); /* 133.333% */
+  text-decoration: none;
+}
+.nav-links a:hover {
+  color: var(--Amber-500, #ff8524);
+  transition: all 0.3s ease-in-out;
+}
+
+button {
+  display: flex;
+  padding: var(--spacing-md, 12px) var(--spacing-2xl, 24px);
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-sm, 8px);
+  border-radius: var(--radius-md, 12px);
+  background: var(--Amber-500, #ff8524);
+  border: none;
+  color: var(--White, #fff);
+  /* Landing/button-lg */
+  font-family: var(--font-family-default, "Noto Sans TC");
+  font-size: var(--font-size-button-lg, 18px);
+  font-style: normal;
+  font-weight: var(--font-weight-button-lg, 700);
+  line-height: var(--font-line-height-button-lg, 24px); /* 133.333% */
+}
