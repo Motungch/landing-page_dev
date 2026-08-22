@@ -21,7 +21,7 @@
   --font-line-height-h4: 32px;
 
   --font-size-button-lg: 18px;
-  --font-weight-button-lg: 600;
+  --font-weight-button-lg: 500;
   --font-line-height-button-lg: 24px;
 
   --font-size-hero: 56px;
@@ -71,6 +71,44 @@
   --header-height: 80px;
 }
 
+/* ------------------------------------------------------------
+   Typography 第二組字級（對應 Figma Variables Typography/Landing
+   的第二個 mode）。
+
+   斷點刻意對齊各區塊的第一道收縮 1519（= 內容 1440 + 左右內距 40x2），
+   而不是 header 收合漢堡的 1199 —— 1440 是最常見的筆電寬度，
+   桌機字級在這一段就已經偏大，掛在 1199 的話這 320px 完全吃不到。
+
+   只列「與桌機 mode 不同」的 token；沒出現在這裡的表示兩個 mode 同值
+   （button-lg 的 line-height 24 與 weight 500 都沒變，所以不重複宣告）。
+
+   注意：這是全域 token，所有消費者會一起變。
+   已在區塊 CSS 裡用字面值調過字級的（如 highlights 的 --hl-title-size），
+   請維持在該區塊處理，不要再往這裡加，否則同一個字級會有兩套規則。
+
+   line-height 一律跟著 font-size 一起降 —— 只降字級會讓行距比例被動放大
+   （例：hero 56/60 是 107%，若字級降到 48 而 lh 留在 60 就變成 125%，
+   兩行標題會明顯鬆開）。這裡的 lh 都是從既有的兩組值線性推出來的，
+   不是隨意取整：
+     hero    56/60（桌機）與 40/48（w1023）連線，48px 對應 lh 54
+     h4      24/32（桌機）與 20/28（hero p w1023）連線，22px 對應 lh 30
+     body-lg 18/26 直接沿用 footer-cta 在 w1199 已驗證過的同一組值
+   ------------------------------------------------------------ */
+@media screen and (max-width: 1519px) {
+  :root {
+    --font-size-button-lg: 16px;
+
+    --font-size-hero: 48px;
+    --font-line-height-hero: 54px;
+
+    --font-size-h4: 22px;
+    --font-line-height-h4: 30px;
+
+    --font-size-body-lg: 18px;
+    --font-line-height-body-lg: 26px;
+  }
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -116,7 +154,7 @@ button {
   font-family: var(--font-family-default, "Noto Sans TC");
   font-size: var(--font-size-button-lg, 18px);
   font-style: normal;
-  font-weight: var(--font-weight-button-lg, 600);
+  font-weight: var(--font-weight-button-lg, 500);
   line-height: var(--font-line-height-button-lg, 24px); /* 133.333% */
 }
 

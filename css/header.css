@@ -83,7 +83,7 @@ ul.nav-links {
   font-family: var(--font-family-default, "Noto Sans TC");
   font-size: var(--font-size-button-lg, 18px);
   font-style: normal;
-  font-weight: var(--font-weight-button-lg, 600);
+  font-weight: var(--font-weight-button-lg, 500);
   line-height: var(--font-line-height-button-lg, 24px); /* 133.333% */
   text-decoration: none;
 }

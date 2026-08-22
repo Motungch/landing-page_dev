@@ -229,8 +229,9 @@
     --cta-logo-size: 104px;
     --cta-title-size: 28px;
     --cta-title-lh: 36px;
-    --cta-body-size: 18px;
-    --cta-body-lh: 26px;
+    /* 內文字級不用在這裡處理：base.css 的 w1519 已把 --font-size-body-lg
+       降成 18/26，上面 --cta-body-size 是從它推導的，這裡會自動拿到同一組值。
+       （原本寫死的 18px/26px 就是這組數字，留著只會變成兩處維護） */
   }
 }
 

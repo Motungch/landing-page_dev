@@ -95,11 +95,11 @@
 
 .footer-brand p {
   color: var(--White);
-  /* Landing/body-lg */
+  /* Landing/body */
   font-family: var(--font-family-default);
   font-size: var(--footer-name-size);
   font-style: normal;
-  font-weight: var(--font-weight-body-lg);
+  font-weight: var(--font-weight-body);
   line-height: var(--footer-name-lh);
 }
 
