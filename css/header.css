@@ -3,11 +3,23 @@
    依賴 base.css 的 token，載入順序需在 base.css 之後。
    ============================================================ */
 
+/* Header 全域固定在最上方。
+   position: fixed 會讓 header 脫離文件流，後面的內容會整個往上遞補 80px，
+   所以由 body 補一個等高的 padding-top 把版面推回原位 ——
+   兩邊共用 base.css 的 --header-height，改高度只要改那一個地方。
+   （fixed 同時也還是漢堡選單面板 top: 100% 的定位基準） */
+body {
+  padding-top: var(--header-height);
+}
+
 .header {
-  position: relative; /* 漢堡選單面板的定位基準 */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 10; /* 蓋在 Hero Banner 上方 */
   display: flex;
-  height: 80px;
+  height: var(--header-height);
   padding: 0 40px;
   justify-content: center;
   align-items: center;
@@ -93,6 +105,20 @@ ul.nav-links {
   display: block;
   width: 24px;
   height: 24px;
+}
+
+/* 漢堡 ↔ 關閉 icon 互換。
+   兩支 icon 都寫在 DOM 裡，靠 aria-expanded 決定顯示哪一支 ——
+   這個屬性 main.js 開關選單時本來就會同步，不必再為了換圖多寫 JS，
+   而且「畫面上看到的圖示」與「輔助技術聽到的狀態」永遠是同一個真相來源。
+   兩支都是 Design System 的 24x24 icon component，換圖時大小不會跳動。 */
+.nav-toggle .nav-toggle-close,
+.nav-toggle[aria-expanded="true"] .nav-toggle-menu {
+  display: none;
+}
+
+.nav-toggle[aria-expanded="true"] .nav-toggle-close {
+  display: block;
 }
 
 /* RWD-Header w1199 以下：導覽連結收進漢堡選單

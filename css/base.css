@@ -10,6 +10,7 @@
   --Cream-100: #fdfbf7;
   --Cream-700: #a69476;
   --Ink-200: #d6d6d4;
+  --Ink-300: #b0b0ad;
   --Ink-500: #5a5a58;
   --Ink-600: #2b2a28;
   --White: #fff;
@@ -64,12 +65,37 @@
   --radius-xl: 24px;
   --radius-2xl: 40px;
   --radius-full: 999px;
+
+  /* Header 固定在最上方（見 header.css），高度同時是 body 的補償內距
+     與錨點捲動的 offset，所以提到全域 token */
+  --header-height: 80px;
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+/* 錨點導航用「順暢滾動」而不是瞬間跳轉。
+   放在 html 上是為了讓 header 導覽列、footer 連結等所有 #錨點 都吃得到，
+   不必逐一在 JS 裡攔 click。 */
+html {
+  scroll-behavior: smooth;
+}
+
+/* 使用者在系統層級開了「減少動態效果」就回到瞬間跳轉 —— 順暢滾動對前庭
+   敏感的使用者會不適，這是 scroll-behavior 的標準搭配 */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* 捲到錨點時，往上多留一個 header 的高度，
+   否則區塊標題會被固定在最上方的 header 蓋住 */
+section[id] {
+  scroll-margin-top: var(--header-height);
 }
 
 body {

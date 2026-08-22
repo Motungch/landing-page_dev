@@ -166,8 +166,8 @@
   align-items: flex-end;
   gap: var(--spacing-xs);
   font-family: var(--font-family-default);
-  font-size: var(--font-size-body-lg);
-  font-weight: var(--font-weight-body-lg);
+  font-size: var(--font-size-body);
+  font-weight: 500;
   line-height: var(--font-line-height-body-lg);
   color: var(--Ink-600);
   white-space: nowrap;

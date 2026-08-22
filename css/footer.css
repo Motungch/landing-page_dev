@@ -1,0 +1,193 @@
+/* ============================================================
+   Section 6 — Footer
+   對應 Figma w1920 稿：footer 1920x120、底色 Ink-600、左右內距 240
+   （1920 - 240x2 = 1440，與其他區塊的內容寬一致）。
+   三個元素：Logo（56 + 間距 16 + 字）靠左、Copyright 置中、
+   社群 icon（44x44 兩顆、間距 16）靠右。
+
+   排版策略：
+   1. 底色要滿版出血，所以 <footer> 自己不設 max-width，
+      改由內層 .footer-inner 收 max-width: 1440 —— 與 header 同一套寫法。
+   2. Copyright 在 Figma 是「絕對置中於 1920」（x=829，中心正好 960），
+      不是 space-between 排出來的位置。這裡用 grid 的 1fr auto 1fr：
+      左右兩欄永遠等寬，中間那欄就自然落在容器正中央，
+      不必動用 absolute，窄螢幕時也不會壓到左右兩欄。
+   3. 高度用 min-height 而不是 height。
+      深色帶平常固定 --footer-h（80），但 767 以下版型會從「三欄並排」
+      變成「單欄堆疊」，內容高度一口氣從 44 變成 140 ——
+      寫死 height 的話 grid 撐不開，社群 icon 會被深色帶的下緣切一半、
+      Copyright 直接掉到色塊外面。min-height 只保證下限，
+      堆疊時讓 footer 自己長高，這是本區塊唯一會「變高」的情況。
+      上下內距走 --footer-py：768 以上是 0（高度全交給 --footer-h），
+      堆疊之後才給 40，讓三段內容不會貼齊色塊邊緣。
+   4. 斷點沿用全站既有的 1519 / 1023 / 767 三道（1199 這一道
+      footer 內容還很寬鬆，不需要另外處理）。
+      767 以下改為單欄置中堆疊，並用 order 把 Copyright 移到最後 ——
+      這是 footer 最常見的閱讀順序（識別 → 社群 → 版權宣告）。
+   5. 社群按鈕在 Figma 的底色就是 Ink-600（與 footer 同色＝看不見），
+      那顆 44x44 的圓形其實是點擊熱區與 hover 底板，
+      所以這裡預設 transparent，hover 才浮出 Ink-500。
+   6. 內容元素（Logo / 品牌名 / 社群按鈕 / 深色帶高度）走「等比流體縮放」，
+      不跟著斷點跳階 —— 視覺元素在斷點瞬間變一階很顯眼，Logo 尤其明顯。
+      作法是只留一個驅動值 --footer-u，其餘尺寸都用它乘一個固定比例推導，
+      這樣「1440 當下調好的比例關係」在任何寬度都不會跑掉，
+      日後要整體放大縮小也只要動 --footer-u 那一行。
+      基準刻意訂在 w1440（Logo 32），而不是 Figma w1920 稿的 56 ——
+      稿上的尺寸在 1440 實際看起來過大，這是有意識的偏離，對稿時要留意。
+      版面留白（左右內距、grid gap）不參與縮放，仍走全站既有的斷點，
+      才能跟 hero / section 2 的 40 / 32 / 20 外框內距對齊。
+   ============================================================ */
+
+.site-footer {
+  /* --- 等比縮放的唯一驅動值（見檔頭第 6 點）---
+     這條直線通過 (768, 28) 與 (1440, 32)：0.6vw 是斜率、23.4px 是截距。
+     下限 28 在 768 觸底並一路守到手機，上限 36 是為了超寬螢幕不要無限長大。
+     實測：768→28.0、1023→29.5、1440→32.0、1920→34.9 */
+  --footer-u: clamp(28px, calc(23.4px + 0.6vw), 36px);
+
+  /* 下面全部由 --footer-u 乘比例推導，括號內是 w1440 的實際值 */
+  --footer-h: calc(var(--footer-u) * 2.5); /* 80：深色帶高度（下限，不是寫死） */
+  --footer-logo-size: var(--footer-u); /* 32 */
+  --footer-logo-gap: calc(var(--footer-u) * 0.375); /* 12 */
+  --footer-name-size: calc(var(--footer-u) * 0.5625); /* 18 */
+  --footer-name-lh: 1.4; /* 改成無單位比例，字級一縮放行高才會跟著走 */
+  /* 社群 icon 與圓形熱區都只准往上長、不准縮：
+     icon 是 24x24 的 Design System component，再小字形筆畫就糊了；
+     圓形熱區平常是透明的（看不見），縮小它只會傷到點擊區。
+     所以 1440 以下兩者都停在下限，1440 以上才跟著 --footer-u 放大。 */
+  --footer-social-icon: max(24px, calc(var(--footer-u) * 0.75)); /* 24 */
+  --footer-social-size: max(44px, calc(var(--footer-u) * 1.375)); /* 44 */
+
+  /* --- 版面留白：不參與縮放，走全站既有的斷點 --- */
+  --footer-py: 0px; /* 768 以上不需要上下內距，高度交給 --footer-h */
+  --footer-px: var(--spacing-4xl); /* 40：1920 時內容 max-width 1440，左右自然留 240 */
+
+  display: flex;
+  justify-content: center;
+  padding: var(--footer-py) var(--footer-px);
+  min-height: var(--footer-h); /* 不能用 height：堆疊後會撐不開（見檔頭第 3 點） */
+  background: var(--Ink-600);
+}
+
+/* 三欄 1fr auto 1fr：中間那欄（Copyright）永遠落在正中央（見檔頭第 2 點） */
+.footer-inner {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--spacing-3xl);
+  width: 100%;
+  max-width: 1440px;
+}
+
+/* --- 左：Logo + 品牌名 --- */
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--footer-logo-gap);
+  min-width: 0; /* 沒有這行，品牌名會把左欄撐得比右欄寬，中間那欄就跟著偏掉 */
+}
+
+.footer-brand img {
+  flex-shrink: 0;
+  width: var(--footer-logo-size);
+  height: var(--footer-logo-size);
+}
+
+.footer-brand p {
+  color: var(--White);
+  /* Landing/body-lg */
+  font-family: var(--font-family-default);
+  font-size: var(--footer-name-size);
+  font-style: normal;
+  font-weight: var(--font-weight-body-lg);
+  line-height: var(--footer-name-lh);
+}
+
+/* --- 中：Copyright --- */
+.footer-copyright {
+  color: var(--Ink-300);
+  text-align: center;
+  /* Landing/caption */
+  font-family: var(--font-family-default);
+  font-size: var(--font-size-caption);
+  font-style: normal;
+  font-weight: var(--font-weight-caption);
+  line-height: var(--font-line-height-caption);
+}
+
+/* --- 右：社群連結 --- */
+.footer-social {
+  display: flex;
+  justify-self: end; /* 靠右欄的右緣，也就是 Figma 的 x=1680 */
+  align-items: center;
+  gap: var(--spacing-lg);
+  list-style: none;
+}
+
+/* 44x44 的圓形熱區，底色平常是透明的（見檔頭第 5 點） */
+.footer-social a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--footer-social-size);
+  height: var(--footer-social-size);
+  border-radius: var(--radius-full);
+  background: transparent;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.footer-social a:hover {
+  background: var(--Ink-500);
+}
+
+.footer-social img {
+  width: var(--footer-social-icon);
+  height: var(--footer-social-icon);
+}
+
+/* --- RWD w1519 以下：與其他區塊同步收掉外框內距 --- */
+@media screen and (max-width: 1519px) {
+  .site-footer {
+    --footer-px: var(--spacing-3xl); /* 32 */
+  }
+}
+
+/* --- RWD w1023 以下：改用與 hero / section 2 / section 5 相同的 20px 外框內距，
+       Logo 與字級各降一階，整條 footer 的高度也跟著收斂 --- */
+@media screen and (max-width: 1023px) {
+  .site-footer {
+    /* 只動版面留白：Logo、品牌名、社群按鈕的尺寸由 --footer-u 連續縮放，
+       這裡不再逐一覆寫，否則會在斷點上跳階（見檔頭第 6 點）。
+       --footer-py 也維持 0：這一道還是三欄並排 */
+    --footer-px: 20px;
+  }
+
+  .footer-inner {
+    gap: var(--spacing-xl); /* 20 */
+  }
+}
+
+/* --- RWD w767 以下：單欄置中堆疊。
+       三欄並排在 375 寬時，中間的 Copyright 會被擠成三行、
+       左右兩欄也各自換行，不如直接改成上下堆疊。
+       order 把 Copyright 移到最後（見檔頭第 4 點）。 --- */
+@media screen and (max-width: 767px) {
+  .site-footer {
+    --footer-py: var(--spacing-4xl); /* 40：堆疊後靠內距撐開，min-height 不再是決定值 */
+  }
+
+  .footer-inner {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: var(--spacing-2xl); /* 24 */
+  }
+
+  .footer-social {
+    order: 1;
+    justify-self: center; /* 覆蓋桌機的靠右 */
+  }
+
+  .footer-copyright {
+    order: 2;
+  }
+}

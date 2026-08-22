@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="css/highlights.css" />
     <link rel="stylesheet" href="css/process.css" />
     <link rel="stylesheet" href="css/footer-cta.css" />
+    <link rel="stylesheet" href="css/footer.css" />
   </head>
   <body>
     <header class="header">
@@ -50,7 +51,9 @@
             aria-expanded="false"
             aria-controls="nav-links"
           >
-            <img src="imgs/icons/menu.svg" alt="" />
+            <!-- 兩支 icon 都放進來，由 CSS 依 aria-expanded 決定顯示哪一支（見 header.css） -->
+            <img src="imgs/icons/menu.svg" alt="" class="nav-toggle-menu" />
+            <img src="imgs/icons/close.svg" alt="" class="nav-toggle-close" />
           </button>
         </nav>
       </div>
@@ -341,6 +344,32 @@
         </div>
       </div>
     </section>
+
+    <!-- Section 6_Footer -->
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <img src="imgs/header/source/App Logo 1.png" alt="居家軟裝 App" />
+          <p>居家軟裝 App</p>
+        </div>
+
+        <p class="footer-copyright">© 2026 居家軟裝 App. All rights reserved.</p>
+
+        <!-- 之後換成真正的社群連結；icon 是純裝飾，語意由 aria-label 提供 -->
+        <ul class="footer-social">
+          <li>
+            <a href="#" aria-label="Instagram">
+              <img src="imgs/icons/instagram.svg" alt="" />
+            </a>
+          </li>
+          <li>
+            <a href="#" aria-label="YouTube">
+              <img src="imgs/icons/youtube.svg" alt="" />
+            </a>
+          </li>
+        </ul>
+      </div>
+    </footer>
 
     <script src="js/main.js" defer></script>
   </body>
