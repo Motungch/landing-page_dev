@@ -3,7 +3,7 @@
    依賴 base.css 的 token，載入順序需在 base.css 之後。
    ============================================================ */
 
-/* Hero Banner —— 桌機 w1280 以上，對應 Figma w1440 / w1920 稿
+/* Hero Banner —— 桌機 w1520 以上，對應 Figma w1920 稿
    三個斷點共用同一套結構：背景圖與 mockup 都是滿版疊圖，文字浮在上層，
    斷點只改「容器高度、文字位置、字級」，不改 DOM 排列。 */
 #hero-banner {
@@ -102,16 +102,34 @@
   }
 }
 
-/* RWD-平板 w1024~1439：拉高到 1080px，文字改置頂，避開手機 mockup
-   （1440 以下標題右緣就會撞到 mockup 的手機，所以切換點設在 1440 而非 1280） */
-@media screen and (max-width: 1439px) {
+/* RWD w1519 以下：文字改置頂（Align top left + 上下內距 160）。
+
+   斷點原本設在 1439，但那樣 w1440 本身會落在桌機版：align-items: center
+   會把文字推到第一屏偏下方，一進站看到的重心太低。改成 1519 與全站第一道
+   收縮（= 內容 1440 + 左右內距 40x2）對齊之後，1440 才會吃到置頂。
+
+   這裡刻意只動「對齊與上下內距」，不動 min-height —— 容器高度與 mockup
+   位置是綁在一起的（見下方 w1439 的說明），一起改會讓 1440 的圖跑掉。
+   左右內距也維持 base 的 clamp，所以用 padding-block 而不是 padding 簡寫。 */
+@media screen and (max-width: 1519px) {
   #hero-banner {
     align-items: flex-start;
+    padding-block: 160px;
+  }
+}
+
+/* RWD-平板 w1439 以下：容器拉高到 1080，mockup 維持原始 932 高並改為貼齊底部，
+   上方多出來的空間露出背景圖 —— 目的是讓標題右緣不要撞到 mockup 的手機。
+
+   這兩條必須綁在同一個斷點：.hero-mockup 用 inset: 0 撐滿，一旦 top: auto
+   改成貼底，它的位置就由容器高度決定。只提高 min-height 而不調整 mockup，
+   圖會整個往下沉（1080 - 932 = 148px）；反之亦然。
+   1440~1519 的標題還離手機夠遠，不需要這組，所以留在 1439 不往上搬。 */
+@media screen and (max-width: 1439px) {
+  #hero-banner {
     min-height: 1080px;
-    padding: 160px 120px;
   }
 
-  /* mockup 維持原始 932px 高並貼齊底部，上方多出來的空間露出背景圖 */
   .hero-mockup {
     top: auto;
     height: 932px;

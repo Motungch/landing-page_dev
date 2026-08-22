@@ -17,6 +17,11 @@ const fs = require("fs");
 const path = require("path");
 
 const PORT = process.env.PORT || 4173;
+/* 預設只綁 localhost —— 不加這個參數的話 node 會聽在所有網路介面上，
+   同一個 Wi-Fi 下的任何裝置都能瀏覽整個專案目錄。
+   要用手機連進來實測 RWD 時，改成：HOST=0.0.0.0 node tools/serve.js
+   然後在手機開 http://<你的內網IP>:4173（僅限你信任的網路） */
+const HOST = process.env.HOST || "127.0.0.1";
 /* 以這支檔案的位置回推專案根目錄，不依賴啟動時的 cwd */
 const ROOT = path.resolve(__dirname, "..");
 
@@ -59,6 +64,6 @@ http
       res.end(buf);
     });
   })
-  .listen(PORT, () => {
-    console.log(`serving ${ROOT} on http://localhost:${PORT}`);
+  .listen(PORT, HOST, () => {
+    console.log(`serving ${ROOT} on http://${HOST}:${PORT}`);
   });
