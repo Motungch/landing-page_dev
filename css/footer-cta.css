@@ -1,0 +1,262 @@
+/* ============================================================
+   Section 5 — Footer CTA Banner
+   對應 Figma w1920 稿：section 只有 padding-bottom 120 / 左右 240
+   （上緣的 120 由 section 4 的 padding-bottom 提供），
+   banner 1440x500、圓角 40、底色 Ink-600，內距 200/64。
+   文字欄 680 靠左，手機圖 344x436 絕對定位在右（left 966 → 距右緣 130）。
+
+   排版策略：
+   1. 沿用前面區塊的「左右內距 + 內容 max-width 1440 置中」，
+      斷點對齊既有的 1519 / 1199 / 1023 / 767 四道。
+   2. 手機圖是「切邊出血」的裝飾，不是內容 —— 它在 Figma 裡上緣被 banner
+      裁掉 264px，所以匯出的 Mockup Image-4.png（344x436）**上緣是一條硬切線**。
+      這條切線只有貼齊 banner 上緣時才看不出來，這是整個區塊 RWD 的唯一硬限制：
+      所以圖一律 absolute + top: 0，切線永遠壓在 banner 上緣，
+      高度讓圖自己照 344:436 展開，下面剩多少空白就是 banner 的呼吸空間。
+      （w1920 時文字欄 372 + 上下內距 128 = 500，圖高 436，
+        下方剛好剩 64，與 Figma 完全一致）
+      千萬不要改成「bottom 對齊文字欄底線」—— 視窗一窄文字換行變高，
+      圖高卻跟著變窄變矮，切線就會浮到 banner 中間露出來。
+      w767 以下圖直接隱藏，這條限制就不用再管（見最後一道斷點）。
+   3. 文字欄不寫 max-width，寬度由 banner 的左右內距決定：
+      padding-right = 手機圖寬 + 淨間距 + 手機圖距右緣，
+      這樣「替手機圖保留的空間」只有一個地方定義，斷點只要改那三個變數，
+      文字欄永遠不會壓到圖上。w1920 時 1440 - 200 - 560 = 680，與 Figma 相同。
+   4. App Store 按鈕的箭頭在白底上是深色的，而 imgs/icons/arrow-right.svg
+      是白色版（給橘底按鈕用的）。這裡不另外匯出一份，直接用 mask 把同一支
+      SVG 當形狀、填 Ink-600，顏色就跟著 token 走（見 .cta-store-arrow）。
+   ============================================================ */
+
+/* id 用 download：header 導覽列的「立即下載」指向 #download */
+#download {
+  /* 本區塊專用的區域變數，斷點只要改這幾個值，下面規則不用重寫 */
+  --cta-section-pb: 120px;
+  --cta-section-px: 40px; /* 1920 時內容 max-width 1440，左右自然留 240 */
+
+  --cta-banner-py: var(--spacing-6xl); /* 64 */
+  --cta-banner-pl: 200px;
+  --cta-banner-radius: var(--radius-2xl); /* 40 */
+
+  --cta-mockup-w: 344px;
+  --cta-mockup-gap: 86px; /* 文字欄與手機圖之間的淨距離 */
+  --cta-mockup-right: 130px; /* 手機圖右緣距 banner 右緣 */
+
+  --cta-stack-gap: var(--spacing-3xl); /* logo / 文案 / 按鈕 三段的距離 */
+  --cta-logo-size: 160px;
+  --cta-title-size: var(--font-size-h3);
+  --cta-title-lh: var(--font-line-height-h3);
+  --cta-body-size: var(--font-size-body-lg);
+  --cta-body-lh: var(--font-line-height-body-lg);
+
+  display: flex;
+  justify-content: center;
+  padding: 0 var(--cta-section-px) var(--cta-section-pb);
+  background: var(--White);
+}
+
+/* --- 深色 banner ---
+   overflow: hidden 有兩個用途：裁掉手機圖溢出上緣的部分、讓圓角吃得到圖 */
+.cta-banner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 1440px;
+  /* padding-right 就是「替手機圖保留的欄位」，文字欄剩多寬由它決定 */
+  padding: var(--cta-banner-py)
+    calc(var(--cta-mockup-w) + var(--cta-mockup-gap) + var(--cta-mockup-right))
+    var(--cta-banner-py) var(--cta-banner-pl);
+  border-radius: var(--cta-banner-radius);
+  background: var(--Ink-600);
+  overflow: hidden;
+}
+
+/* --- 手機圖（裝飾用，alt 留空、aria-hidden）---
+   top: 0 是關鍵：圖的硬切邊永遠貼齊 banner 上緣（見檔頭第 2 點） */
+.cta-mockup {
+  position: absolute;
+  top: 0;
+  right: var(--cta-mockup-right);
+  width: var(--cta-mockup-w);
+  pointer-events: none;
+}
+
+.cta-mockup img {
+  display: block;
+  width: 100%;
+  height: auto; /* 照 344:436 展開，不另外寫死高度 */
+}
+
+/* --- 文字欄 --- */
+.cta-text {
+  flex: 1 1 0;
+  min-width: 0; /* 沒有這行，長字串會把 banner 撐破 */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--cta-stack-gap);
+}
+
+/* Figma 的橘色外光暈：drop-shadow 走 alpha 通道，
+   會沿著 logo 的圓角方形輪廓發光，用 box-shadow 會變成矩形 */
+.cta-logo {
+  width: var(--cta-logo-size);
+  height: var(--cta-logo-size);
+  filter: drop-shadow(0 0 40px rgba(255, 133, 36, 0.6));
+}
+
+.cta-copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  width: 100%;
+}
+
+.cta-copy h2 {
+  font-family: var(--font-family-default);
+  font-size: var(--cta-title-size);
+  font-weight: var(--font-weight-h3);
+  line-height: var(--cta-title-lh);
+  color: var(--White);
+}
+
+.cta-copy p {
+  font-family: var(--font-family-default);
+  font-size: var(--cta-body-size);
+  font-weight: var(--font-weight-body-lg);
+  line-height: var(--cta-body-lh);
+  color: var(--Amber-300);
+}
+
+/* --- App Store 下載按鈕 ---
+   是連結不是 button，所以不吃 base.css 的 button 樣式，這裡自己寫全 */
+.cta-store {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-2xl) var(--spacing-sm)
+    var(--spacing-xl); /* 左 20 右 24：左邊的 Apple logo 本身有視覺留白 */
+  border-radius: var(--radius-md);
+  background: var(--White);
+  text-decoration: none;
+}
+
+.cta-store-logo {
+  flex-shrink: 0;
+  width: 35px;
+  height: 42px;
+}
+
+.cta-store-labels {
+  display: flex;
+  flex-direction: column;
+}
+
+.cta-store-sm {
+  font-family: var(--font-family-default);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-caption);
+  line-height: var(--font-line-height-caption);
+  color: var(--Ink-600);
+}
+
+/* 「App Store」與箭頭底線對齊（Figma 是 align-items: end） */
+.cta-store-lg {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-xs);
+  font-family: var(--font-family-default);
+  font-size: var(--font-size-body-lg);
+  font-weight: var(--font-weight-body-lg);
+  line-height: var(--font-line-height-body-lg);
+  color: var(--Ink-600);
+  white-space: nowrap;
+}
+
+/* 白底上的深色箭頭。共用 imgs/icons/arrow-right.svg（白色版），
+   用 mask 把它當成形狀、底色填 Ink-600，就不必再匯出一份深色 SVG，
+   日後改色也只要改這裡的 background-color */
+.cta-store-arrow {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  background-color: var(--Ink-600);
+  -webkit-mask: url("../imgs/icons/arrow-right.svg") no-repeat center / contain;
+  mask: url("../imgs/icons/arrow-right.svg") no-repeat center / contain;
+}
+
+/* --- RWD w1519 以下：banner 已站不滿 1440，開始被壓窄。
+       收掉外框內距，同時把左內距與手機圖的右留白縮一階，
+       這 100px 全部留給文字欄（1200 時文字欄從 376 變成 472） --- */
+@media screen and (max-width: 1519px) {
+  #download {
+    --cta-section-px: var(--spacing-3xl);
+    --cta-banner-pl: 160px;
+    --cta-mockup-gap: var(--spacing-6xl); /* 86 -> 64 */
+    --cta-mockup-right: 96px;
+  }
+}
+
+/* --- RWD w1199 以下：與 header 收合漢堡選單同一個斷點。
+       banner 只剩 1135，左內距 160 太奢侈，一次收到 96；
+       手機圖同步縮到 300，讓圖高（380）跟著變矮的 banner 走，
+       圖下方的空白才不會愈拉愈大 --- */
+@media screen and (max-width: 1199px) {
+  #download {
+    --cta-section-pb: 96px;
+    --cta-banner-py: 56px;
+    --cta-banner-pl: 96px;
+    --cta-mockup-w: 300px;
+    --cta-mockup-gap: var(--spacing-5xl); /* 48 */
+    --cta-mockup-right: var(--spacing-6xl); /* 64 */
+    --cta-logo-size: 128px;
+  }
+}
+
+/* --- RWD w1023 以下：仍維持左右兩欄（與 section 3 / 4 收單欄的斷點相同，
+       但這裡兩欄還撐得住 —— 文字欄在 768 時還有 384）。
+       改用與 hero / section 2 相同的 20px 外框內距，字級降一階 --- */
+@media screen and (max-width: 1023px) {
+  #download {
+    --cta-section-pb: 80px;
+    --cta-section-px: 20px;
+    --cta-banner-py: var(--spacing-5xl); /* 48 */
+    --cta-banner-pl: var(--spacing-4xl); /* 40 */
+    --cta-banner-radius: var(--radius-xl); /* 40 -> 24 */
+    --cta-mockup-w: 240px;
+    --cta-mockup-gap: var(--spacing-3xl); /* 32 */
+    --cta-mockup-right: var(--spacing-3xl); /* 32 */
+    --cta-logo-size: 104px;
+    --cta-title-size: 28px;
+    --cta-title-lh: 36px;
+    --cta-body-size: 18px;
+    --cta-body-lh: 26px;
+  }
+}
+
+/* --- RWD w767 以下：手機版不顯示手機圖。
+       banner 只剩 727，若還要留一欄給圖，文字欄會不到 380，
+       標題會被擠成三四行；而且圖縮到 240 寬時裡面的 App 介面也看不清楚了。
+       圖一拿掉，右邊就不必再替它保留欄位，左右內距改回對稱。 --- */
+@media screen and (max-width: 767px) {
+  #download {
+    --cta-section-pb: 64px;
+    --cta-banner-py: var(--spacing-4xl); /* 40 */
+    --cta-banner-pl: var(--spacing-2xl); /* 24 */
+    --cta-stack-gap: var(--spacing-2xl);
+    --cta-logo-size: 88px;
+    --cta-title-size: var(--font-size-h4);
+    --cta-title-lh: var(--font-line-height-h4);
+    --cta-body-size: var(--font-size-body);
+    --cta-body-lh: var(--font-line-height-body);
+  }
+
+  .cta-mockup {
+    display: none;
+  }
+
+  /* 左右對稱：padding-right 不再需要 calc 出來的「手機圖欄位」 */
+  .cta-banner {
+    padding: var(--cta-banner-py) var(--cta-banner-pl);
+  }
+}

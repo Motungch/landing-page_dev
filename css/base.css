@@ -5,6 +5,7 @@
    ============================================================ */
 
 :root{
+  --Amber-300: #ffcda3;
   --Amber-500: #ff8524;
   --Cream-100: #fdfbf7;
   --Cream-700: #a69476;
@@ -42,10 +43,15 @@
   --font-weight-body: 400;
   --font-line-height-body: 24px;
 
+  --font-size-caption: 14px;
+  --font-weight-caption: 400;
+  --font-line-height-caption: 20px;
+
   --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 12px;
   --spacing-lg: 16px;
+  --spacing-xl: 20px;
   --spacing-2xl: 24px;
   --spacing-3xl: 32px;
   --spacing-4xl: 40px;
@@ -56,6 +62,7 @@
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 24px;
+  --radius-2xl: 40px;
   --radius-full: 999px;
 }
 

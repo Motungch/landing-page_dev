@@ -76,7 +76,7 @@
      想完全照 Figma，把這行換成 align-items: start 即可。 */
   align-items: stretch;
   gap: var(--spacing-2xl);
-  width: 100%;
+  width: 95%;
   max-width: 1440px;
   list-style: none;
 }
